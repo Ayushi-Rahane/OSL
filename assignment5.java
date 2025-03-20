@@ -1,20 +1,22 @@
 import java.util.*;
 public class assignment5 {
     public static Scanner sc = new Scanner(System.in);
-    public static void accept(){
-        
-    }
-    public static void fifo(){
-        System.out.println("FIFO Page Replacement Algorithm");
+    public static int[] accept(){
         System.out.println("Enter the length of Reference Page String: ");
         int n = sc.nextInt();
         sc.nextLine();
-       
-        String[] rs = new String[n];
+        int[] rs = new int[n];
         for(int i=0;i<n;i++) {
             System.out.println("Enter element "+(i+1)+" no: ");
-            rs[i]=sc.nextLine();
+            rs[i]=sc.nextInt();
         }
+        return rs;
+
+    }
+    public static void fifo(){
+        System.out.println("FIFO Page Replacement Algorithm");       
+        int[] rs = accept();
+        int n = rs.length;
         int c;
         do {
            
@@ -35,7 +37,7 @@ public class assignment5 {
         //Page insertion and replacement is done in this
         for(int i=0;i<n;i++) {
            
-            int current_page = Integer.parseInt(rs[i]);
+            int current_page = rs[i]; //current page is stored in current_page
             boolean found=false; // it will keep track whether the current page is present in frame or not
            
             //searches for current page in frame
@@ -86,16 +88,12 @@ public class assignment5 {
 
     public static void lru(){
         System.out.println("LRU Page Replacement Algorithm");
-        // Step 1: Get input from the user
-        System.out.println("Enter the length of Reference Page String: ");
-        int n = sc.nextInt();
-        int[] rs1 = new int[n];
-
-        System.out.println("Enter the reference string: ");
-        for (int i = 0; i < n; i++) {
-            rs1[i] = sc.nextInt();
-        }
-
+        
+        
+        int[] rs1 = accept();
+        int n = rs1.length;
+        int c;
+do{
         System.out.println("Enter the Frame size: ");
         int fsize = sc.nextInt();
         sc.nextLine();
@@ -164,22 +162,18 @@ public class assignment5 {
 
         System.out.println("Total Page Faults: " + pageFaults);
         sc.close();
- 
+        System.out.println("Enter 1 to try for another frame size: ");
+        c = sc.nextInt();
+        }while(c==1);
     }
 
     public static void optimal()
     {
         System.out.println("Optimal Page Replacement Algorithm");
-        System.out.println("Enter the length of Reference Page String: ");
-        int n = sc.nextInt();
-        int[] rs3 = new int[n];
-
-        // Input: Reference string
-        System.out.println("Enter the reference string: ");
-        for (int i = 0; i < n; i++) {
-            rs3[i] = sc.nextInt();
-        }
-
+        int c;
+        int[] rs3 = accept();
+        int n = rs3.length;
+        do{
         // Input: Frame size
         System.out.println("Enter the Frame size: ");
         int fsize = sc.nextInt();
@@ -253,6 +247,10 @@ public class assignment5 {
         // Display total page faults
         System.out.println("Total Page Faults: " + pageFault);
         sc.close();
+        System.out.println("Enter 1 to try for another frame size: ");
+         c = sc.nextInt();
+
+    }while(c==1);
 
     }
   public static void main(String[] args) {
@@ -263,8 +261,6 @@ public class assignment5 {
             case 1:
                fifo();
                 break;
-
-                //LRU
             case 2:
                 lru();
                 break;
