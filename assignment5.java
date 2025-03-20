@@ -1,10 +1,26 @@
 import java.util.*;
 public class assignment5 {
     public static Scanner sc = new Scanner(System.in);
+    //It is accept function that accepts the reference string from the user
     public static int[] accept(){
-        System.out.println("Enter the length of Reference Page String: ");
-        int n = sc.nextInt();
-        sc.nextLine();
+        int n;
+        //VALIDATION 1: Accept the length of Reference Page String (n) from the user (must be > 0) and handles valid invalid input.
+        while (true) {
+            System.out.print("Enter the length of Reference Page String (must be > 0): ");
+            if (sc.hasNextInt()) {
+                n = sc.nextInt();
+                if (n > 0){
+                    break;
+                }
+                else 
+                {
+                    System.out.println("Error: Length must be greater than 0!");
+                }
+            } else {
+                System.out.println("Error: Enter a valid integer!");
+                sc.next(); // Consume invalid input
+            }
+        }
         int[] rs = new int[n];
         for(int i=0;i<n;i++) {
             System.out.println("Enter element "+(i+1)+" no: ");
@@ -13,16 +29,35 @@ public class assignment5 {
         return rs;
 
     }
+
+    public static int frame_size(){
+        int fsize;
+        //VALIDATION 2: Accept the Frame size from the user (must be > 0) and handles valid invalid input.
+        while (true) {
+            System.out.print("Enter the Frame size (must be > 0): ");
+            if (sc.hasNextInt()) { //If the input is in integer form then it will be stored in fsize
+                fsize = sc.nextInt();
+                if (fsize > 0) //If the frame size is greater than 0 then it will break the loop
+                { break;
+                }
+                else 
+                { System.out.println("Error: Frame size must be greater than 0!");}
+            } else {
+                System.out.println("Error: Enter a valid integer!");
+                sc.next(); // Consume invalid input
+            }
+        }
+        return fsize;
+    }
+
     public static void fifo(){
         System.out.println("FIFO Page Replacement Algorithm");       
         int[] rs = accept();
         int n = rs.length;
         int c;
+        //do-while loop to repeat the algorithm for different frame sizes
         do {
-           
-        System.out.println("Enter the Frame size: ");
-        int fsize = sc.nextInt();
-        sc.nextLine();
+        int fsize = frame_size();
        
         int[] frame =  new int[fsize]; //Frame is created
         //front pointer will replace the page from the frame
@@ -30,6 +65,7 @@ public class assignment5 {
         int page_fault=0, front=0,rear=-1;
         Arrays.fill(frame, -1); // all blocks of frame will be denoted as -1;
        
+        //Displaying the header of the table
         for(int k=0; k<fsize; k++) {
          System.out.print("F" + (k+1) + "\t");
      }
@@ -93,21 +129,23 @@ public class assignment5 {
         int[] rs1 = accept();
         int n = rs1.length;
         int c;
+                //do-while loop to repeat the algorithm for different frame sizes
 do{
-        System.out.println("Enter the Frame size: ");
-        int fsize = sc.nextInt();
-        sc.nextLine();
+        int fsize = frame_size();
         
-        // Step 2: Initialize variables
+        //Initialize variables
         int[] frame = new int[fsize];  // Frame array
         int[] index = new int[fsize];  // Stores index of last use. It will keep track of which page is used last
         Arrays.fill(frame, -1);  // Initialize frame as empty
         int pageFaults = 0;
 
-        // Print header
-        System.out.println("\nF1\tF2\tF3\tPage Fault");
+        
+        //Displaying the header of the table
+        for(int k=0; k<fsize; k++) {
+            System.out.print("F" + (k+1) + "\t");
+        }
 
-        // Step 3-7: Process each page
+        // Process each page
         for (int i = 0; i < n; i++) {
             int currentPage = rs1[i];
             boolean found = false;
@@ -157,7 +195,7 @@ do{
                     System.out.print(frame[j] + "\t");
                 }
             }
-            System.out.println(found ? "No" : "Yes");
+            System.out.println(found ? "*" : "F"); // Displays F for page Fault and * for no fault.
         }
 
         System.out.println("Total Page Faults: " + pageFaults);
@@ -173,17 +211,20 @@ do{
         int c;
         int[] rs3 = accept();
         int n = rs3.length;
+                //do-while loop to repeat the algorithm for different frame sizes
         do{
-        // Input: Frame size
-        System.out.println("Enter the Frame size: ");
-        int fsize = sc.nextInt();
+
+        int fsize =frame_size();
         
         int[] frame1 = new int[fsize];  // Frame array
         Arrays.fill(frame1, -1);  // Initialize frame as empty
         int pageFault = 0;
 
-        // Print table header
-        System.out.println("\nF1\tF2\tF3\tPage Fault");
+     
+        //Displaying the header of the table
+        for(int k=0; k<fsize; k++) {
+            System.out.print("F" + (k+1) + "\t");
+        }
 
         // Process reference string
         for (int i = 0; i < n; i++) {
@@ -241,7 +282,7 @@ do{
                     System.out.print(frame1[j] + "\t");
                 }
             }
-            System.out.println(found ? "No" : "Yes");
+            System.out.println(found ? "*" : "F"); // Displays F for page Fault and * for no fault.
         }
 
         // Display total page faults
@@ -255,7 +296,9 @@ do{
     }
   public static void main(String[] args) {
 	   Scanner sc = new Scanner(System.in);
+       int c;
 	 System.out.println("Enter 1. to FIFO \n 2. LRU \n 3. Optimal:  ");
+     do{
      int ch = sc.nextInt();
         switch(ch){
             case 1:
@@ -270,8 +313,10 @@ do{
             default:
                 System.out.println("Invalid choice");
         }
+        System.out.println("Enter 1 to try for another algorithm: ");
+        c = sc.nextInt();
 
-
+    }while(c==1);
   }
 }
 
