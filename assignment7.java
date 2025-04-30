@@ -1,8 +1,8 @@
 /*
-*Assignment no: 06
-Title : Write a program to implement Banker’s Algorithm
-Objective :To implement the Banker’s Algorithm to determine the safe state of a
-system during resource allocation.
+*Assignment no: 07
+Simulation of disk scheduling algorithms: First Come First Serve
+(FCFS), SCAN, Circular – SCAN (C-SCAN) and Shortest Seek Time First
+(SSTF).
 Name: Ayushi Rahane
 UCE: UCE2024014
 Batch: B4
@@ -57,35 +57,46 @@ public class assignment7 {
     }
 
     public static void fcfs() {
-        int head = main_head;
+        int head = main_head; // current head position
         int seek = 0;
         System.out.println("\nOrder of execution and seek movements:");
+        //This loop is used to calculate the seek time for each request in the order they were received.
+        // The seek time is the absolute difference between the current head position and the request position.
         for (int i = 0; i < n; i++) {
-            int distance = Math.abs(req[i] - head);
+            int distance = Math.abs(req[i] - head); // Calculate seek time
+            // Print the head movement and seek time
             System.out.println("Head moves from " + head + " to " + req[i] + " -> Seek = " + distance);
-            seek += distance;
-            head = req[i];
+            seek += distance; // Add to total seek time
+            head = req[i]; // Move head to the current request position
         }
 
         System.out.println("\nTotal seek time: " + seek);
-        System.out.println("Average seek time: " + (float) seek / n);
+        System.out.println("Average seek time: " + (float) seek / n); 
     }
 
     public static void sstf() {
-        int head = main_head;
+        int head = main_head; // current head position
         boolean[] visited = new boolean[n]; // to mark visited requests
         int totalSeek = 0;
 
         System.out.println("\nOrder of execution and seek movements:");
-
+       // This loop is used to find the closest request to the current head position and serve it.
+        // The closest request is the one with the minimum seek time.
         for (int i = 0; i < n; i++) {
-            int minDiff = Integer.MAX_VALUE;
-            int index = -1;
+            int minDiff = Integer.MAX_VALUE; // Initialize minimum difference to maximum value
+            int index = -1; // Index of the closest request
+            // If all requests are visited, break the loop  
 
-            // Find the request with minimum seek time
+            // Find the request with minimum seek time 
             for (int j = 0; j < n; j++) {
+                // If the request is not visited, calculate the difference
+                // between the request and the current head position
+             
+                // Mark the request as visited
                 if (!visited[j]) {
-                    int diff = Math.abs(req[j] - head);
+                    int diff = Math.abs(req[j] - head); // Calculate the difference
+                 // If the difference is less than the minimum difference, update the index
+                // and minimum difference
                     if (diff < minDiff) {
                         minDiff = diff;
                         index = j;
@@ -94,12 +105,13 @@ public class assignment7 {
             }
 
             // Serve the closest request
-            visited[index] = true;
+            visited[index] = true; // Mark the request as visited
+            // Calculate the seek time and update the total seek time
             System.out.println("Head moves from " + head + " to " + req[index] + " -> Seek = " + minDiff);
             totalSeek += minDiff;
-            head = req[index];
+            head = req[index]; // Move the head to the current request position
         }
-
+           
         System.out.println("\nTotal seek time: " + totalSeek);
         System.out.println("Average seek time: " + (float) totalSeek / n);
     
@@ -107,48 +119,76 @@ public class assignment7 {
 
     public static void scan() {
         int head = main_head;
+        
         System.out.println("Enter direction (left or right): ");
         String direction = sc.next().toLowerCase();
+        // Validation 4: check if the direction is valid
+        // The direction should be either "left" or "right"
         while (!direction.equals("left") && !direction.equals("right")) {
             System.out.println("Please enter either 'left' or 'right': ");
             direction = sc.next().toLowerCase();
         }
 
-        ArrayList<Integer> requestList = new ArrayList<>();
-        for (int r : req) requestList.add(r);
+        ArrayList<Integer> requestList = new ArrayList<>(); // List to store requests and head position
+        // Add requests to the list
+        for (int r : req) requestList.add(r); // Add requests to the list
+        // Add head position to the list
+        // The head position is added to the list to include it in the seek time calculation
         requestList.add(head);
+        // Sort the list in ascending order
+        // Sorting the list is necessary to calculate the seek time in the correct order
         Collections.sort(requestList);
 
+        // Find the index of the head position in the sorted list
+        // The index is used to determine the order of execution of requests
         int index = requestList.indexOf(head), totalSeek = 0, current = head;
 
         System.out.println("\nOrder of execution and seek movements:");
-
-        if (direction.equals("left")) {
+        // This loop is used to calculate the seek time for each request in the order they were received.
+        // The seek time is the absolute difference between the current head position and the request position.
+        if (direction.equals("left")) { // If the direction is left
+            // Move the head to the left first
             for (int i = index - 1; i >= 0; i--) {
+                // Calculate the seek time for each request to the left of the head position
                 int seek = Math.abs(current - requestList.get(i));
+                // Print the head movement and seek time
+                // The head moves from the current position to the request position
                 System.out.println("Head moves from " + current + " to " + requestList.get(i) + " -> Seek = " + seek);
+                // Add the seek time to the total seek time
                 totalSeek += seek;
+                // Update the current position to the request position
+                // The current position is updated to the request position for the next iteration
                 current = requestList.get(i);
             }
+            // If the current position is not equal to the first request, add the seek time to the total seek time
+            // The first request is the leftmost request in the sorted list
             if (current != r1) totalSeek += Math.abs(current - r1);
-            current = r1;
+            
+            current = r1; 
+            // Update the current position to the first request
+            // Move the head to the right after serving all left requests
             for (int i = index + 1; i < requestList.size(); i++) {
-                int seek = Math.abs(current - requestList.get(i));
+                int seek = Math.abs(current - requestList.get(i)); // Calculate the seek time for each request to the right of the head position
+                // Print the head movement and seek time
                 System.out.println("Head moves from " + current + " to " + requestList.get(i) + " -> Seek = " + seek);
-                totalSeek += seek;
-                current = requestList.get(i);
+                totalSeek += seek; // Add the seek time to the total seek time
+                current = requestList.get(i); // Update the current position to the request position
             }
         } else {
+            // If the direction is right, move the head to the right first
             for (int i = index + 1; i < requestList.size(); i++) {
-                int seek = Math.abs(current - requestList.get(i));
+                int seek = Math.abs(current - requestList.get(i)); // Calculate the seek time for each request to the right of the head position
+                // Print the head movement and seek time
                 System.out.println("Head moves from " + current + " to " + requestList.get(i) + " -> Seek = " + seek);
                 totalSeek += seek;
                 current = requestList.get(i);
             }
-            if (current != r2) totalSeek += Math.abs(current - r2);
+            if (current != r2) totalSeek += Math.abs(current - r2); // If the current position is not equal to the last request, add the seek time to the total seek time
             current = r2;
+            //This loop is used to calculate the seek time for each request in the order they were received.
             for (int i = index - 1; i >= 0; i--) {
-                int seek = Math.abs(current - requestList.get(i));
+                int seek = Math.abs(current - requestList.get(i)); // Calculate the seek time for each request to the left of the head position
+                // Print the head movement and seek time
                 System.out.println("Head moves from " + current + " to " + requestList.get(i) + " -> Seek = " + seek);
                 totalSeek += seek;
                 current = requestList.get(i);
@@ -159,29 +199,37 @@ public class assignment7 {
 
     public static void cscan() {
         int head = main_head;
-        ArrayList<Integer> requestList = new ArrayList<>();
-        for (int r : req) requestList.add(r);
-        requestList.add(head);
-        Collections.sort(requestList);
+        ArrayList<Integer> requestList = new ArrayList<>(); // List to store requests and head position
+        for (int r : req) requestList.add(r); // Add requests to the list
+        requestList.add(head); // Add head position to the list
+        Collections.sort(requestList); // Sort the list in ascending order
 
+        // Find the index of the head position in the sorted list
+        // The index is used to determine the order of execution of requests
         int index = requestList.indexOf(head), totalSeek = 0, current = head;
 
         System.out.println("\nOrder of execution and seek movements:");
-
+        // This loop is used to calculate the seek time for each request in the order they were received.
+        // The seek time is the absolute difference between the current head position and the request position.
         for (int i = index + 1; i < requestList.size(); i++) {
-            int seek = Math.abs(current - requestList.get(i));
+            int seek = Math.abs(current - requestList.get(i)); // Calculate the seek time for each request to the right of the head position
+            // Print the head movement and seek time
             System.out.println("Head moves from " + current + " to " + requestList.get(i) + " -> Seek = " + seek);
             totalSeek += seek;
             current = requestList.get(i);
         }
-
+        // If the current position is not equal to the last request, add the seek time to the total seek time
+        // The last request is the rightmost request in the sorted list
         if (current != r2) totalSeek += Math.abs(current - r2);
+        
         System.out.println("Head moves from " + r2 + " to " + r1 + " (circular jump) -> Seek = " + (r2 - r1));
         totalSeek += (r2 - r1);
         current = r1;
-
+        // Move the head to the left after serving all right requests
+        // This loop is used to calculate the seek time for each request in the order they were received.
         for (int i = 0; i < index; i++) {
-            int seek = Math.abs(current - requestList.get(i));
+            int seek = Math.abs(current - requestList.get(i)); // Calculate the seek time for each request to the left of the head position
+            // Print the head movement and seek time
             System.out.println("Head moves from " + current + " to " + requestList.get(i) + " -> Seek = " + seek);
             totalSeek += seek;
             current = requestList.get(i);
