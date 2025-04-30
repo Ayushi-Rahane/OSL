@@ -13,7 +13,7 @@ import java.util.*;
 public class assignment7 {
     static Scanner sc = new Scanner(System.in);
 
-    static int n, r1, r2, head;
+    static int n, r1, r2, main_head;
     static int[] req;
 
     // Common accept() method
@@ -49,14 +49,15 @@ public class assignment7 {
 
         // Validation 3: check if the head position is within the valid range
         System.out.println("Enter the head position: ");
-        head = sc.nextInt();
-        while (head < r1 || head > r2) {
+        main_head = sc.nextInt();
+        while (main_head < r1 || main_head > r2) {
             System.out.println("Head position should be between " + r1 + " and " + r2 + ". Please enter again: ");
-            head = sc.nextInt();
+            main_head = sc.nextInt();
         }
     }
 
     public static void fcfs() {
+        int head = main_head;
         int seek = 0;
         System.out.println("\nOrder of execution and seek movements:");
         for (int i = 0; i < n; i++) {
@@ -71,18 +72,20 @@ public class assignment7 {
     }
 
     public static void sstf() {
-        int[] localReq = Arrays.copyOf(req, n);
-        boolean[] visited = new boolean[n];
-        int localHead = head, totalSeek = 0;
+        int head = main_head;
+        boolean[] visited = new boolean[n]; // to mark visited requests
+        int totalSeek = 0;
 
         System.out.println("\nOrder of execution and seek movements:");
 
         for (int i = 0; i < n; i++) {
-            int minDiff = Integer.MAX_VALUE, index = -1;
+            int minDiff = Integer.MAX_VALUE;
+            int index = -1;
 
+            // Find the request with minimum seek time
             for (int j = 0; j < n; j++) {
                 if (!visited[j]) {
-                    int diff = Math.abs(localReq[j] - localHead);
+                    int diff = Math.abs(req[j] - head);
                     if (diff < minDiff) {
                         minDiff = diff;
                         index = j;
@@ -90,17 +93,20 @@ public class assignment7 {
                 }
             }
 
+            // Serve the closest request
             visited[index] = true;
-            System.out.println("Head moves from " + localHead + " to " + localReq[index] + " -> Seek = " + minDiff);
+            System.out.println("Head moves from " + head + " to " + req[index] + " -> Seek = " + minDiff);
             totalSeek += minDiff;
-            localHead = localReq[index];
+            head = req[index];
         }
 
         System.out.println("\nTotal seek time: " + totalSeek);
         System.out.println("Average seek time: " + (float) totalSeek / n);
+    
     }
 
     public static void scan() {
+        int head = main_head;
         System.out.println("Enter direction (left or right): ");
         String direction = sc.next().toLowerCase();
         while (!direction.equals("left") && !direction.equals("right")) {
@@ -152,6 +158,7 @@ public class assignment7 {
     }
 
     public static void cscan() {
+        int head = main_head;
         ArrayList<Integer> requestList = new ArrayList<>();
         for (int r : req) requestList.add(r);
         requestList.add(head);
@@ -187,7 +194,7 @@ public class assignment7 {
         int c;
         accept();
         do {
-            System.out.println("\nEnter\n1. FCFS\n2. SSTF\n3. SCAN\n4. C-SCAN\n7. Exit");
+            System.out.println("\nEnter\n1. FCFS\n2. SSTF\n3. SCAN\n4. C-SCAN\n5. Exit");
             c = sc.nextInt();
             switch (c) {
                 case 1:
@@ -202,7 +209,7 @@ public class assignment7 {
                 case 4:
                     cscan();
                     break;
-                case 7:
+                case 5:
                     break;
                 default:
                     System.out.println("Invalid choice. Try again.");
@@ -210,3 +217,111 @@ public class assignment7 {
         } while (c != 7);
     }
 }
+
+
+/*
+Output:
+Enter the number of requests: 
+7
+Enter the Min Range: 
+0
+Enter the Max Range: 
+199
+Enter the request 1: 
+82
+Enter the request 2: 
+170
+Enter the request 3: 
+43
+Enter the request 4: 
+140
+Enter the request 5: 
+24
+Enter the request 6: 
+16
+Enter the request 7: 
+190
+Enter the head position: 
+50
+
+Enter
+1. FCFS
+2. SSTF
+3. SCAN
+4. C-SCAN
+7. Exit
+1
+
+Order of execution and seek movements:
+Head moves from 50 to 82 -> Seek = 32
+Head moves from 82 to 170 -> Seek = 88
+Head moves from 170 to 43 -> Seek = 127
+Head moves from 43 to 140 -> Seek = 97
+Head moves from 140 to 24 -> Seek = 116
+Head moves from 24 to 16 -> Seek = 8
+Head moves from 16 to 190 -> Seek = 174
+
+Total seek time: 642
+Average seek time: 91.71429
+
+Enter
+1. FCFS
+2. SSTF
+3. SCAN
+4. C-SCAN
+7. Exit
+2
+
+Order of execution and seek movements:
+Head moves from 50 to 43 -> Seek = 7
+Head moves from 43 to 24 -> Seek = 19
+Head moves from 24 to 16 -> Seek = 8
+Head moves from 16 to 82 -> Seek = 66
+Head moves from 82 to 140 -> Seek = 58
+Head moves from 140 to 170 -> Seek = 30
+Head moves from 170 to 190 -> Seek = 20
+
+Total seek time: 208
+Average seek time: 29.714285
+
+Enter
+1. FCFS
+2. SSTF
+3. SCAN
+4. C-SCAN
+7. Exit
+3
+Enter direction (left or right): 
+right
+
+Order of execution and seek movements:
+Head moves from 50 to 82 -> Seek = 32
+Head moves from 82 to 140 -> Seek = 58
+Head moves from 140 to 170 -> Seek = 30
+Head moves from 170 to 190 -> Seek = 20
+Head moves from 199 to 43 -> Seek = 156
+Head moves from 43 to 24 -> Seek = 19
+Head moves from 24 to 16 -> Seek = 8
+
+Total seek time: 332
+
+Enter
+1. FCFS
+2. SSTF
+3. SCAN
+4. C-SCAN
+7. Exit
+4
+
+Order of execution and seek movements:
+Head moves from 50 to 82 -> Seek = 32
+Head moves from 82 to 140 -> Seek = 58
+Head moves from 140 to 170 -> Seek = 30
+Head moves from 170 to 190 -> Seek = 20
+Head moves from 199 to 0 (circular jump) -> Seek = 199
+Head moves from 0 to 16 -> Seek = 16
+Head moves from 16 to 24 -> Seek = 8
+Head moves from 24 to 43 -> Seek = 19
+
+Total seek time: 391
+ */
